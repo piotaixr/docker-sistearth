@@ -104,6 +104,8 @@ RUN chown sistearth:sistearth /var/www/
 #
 
 RUN mkdir /var/run/sshd 
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+RUN sed -ri 's/#UsePAM no/UsePAM no/g' /etc/ssh/sshd_config
 RUN mkdir /home/sistearth/.ssh
 ADD id_rsa /home/sistearth/.ssh/id_rsa
 ADD id_rsa.pub /home/sistearth/.ssh/id_rsa.pub

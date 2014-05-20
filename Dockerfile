@@ -8,7 +8,7 @@
 #
 # VERSION : 0.1
 
-FROM ubuntu
+FROM ubuntu:latest
 
 MAINTAINER Dale, <dale-sistearth@outlook.com>
 
@@ -19,9 +19,11 @@ MAINTAINER Dale, <dale-sistearth@outlook.com>
 # Add latest PHP 5 sources
 #
 
+RUN dpkg-divert --local --rename /usr/bin/ischroot && ln -sf /bin/true /usr/bin/ischroot
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common python-software-properties
 RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:ondrej/php5
 
 

@@ -96,6 +96,7 @@ RUN sed -i 's/;date.timezone =/date.timezone = Europe\/Paris/g' /etc/php5/apache
 RUN adduser --gecos "" sistearth
 RUN adduser sistearth sudo
 RUN chown sistearth:sistearth /var/www/
+RUN chmod 4755 /usr/bin/sudo
 
 #
 # SSH

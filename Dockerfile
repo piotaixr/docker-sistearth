@@ -24,7 +24,8 @@ RUN dpkg-divert --local --rename /usr/bin/ischroot && ln -sf /bin/true /usr/bin/
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common python-software-properties
-RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:ondrej/php5
+RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ondrej/php5
+RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:nginx/stable
 
 
 #
@@ -36,7 +37,7 @@ RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:ondrej/php5
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install mysql-client mysql-server 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install apache2 libapache2-mod-php5
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install nginx php5-fpm
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install php5 php-apc php5-intl php5-cli php5-json php5-mysql
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install git openssh-server supervisor
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install pwgen vim curl less bash-completion acl
@@ -64,29 +65,24 @@ ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /var/log/supervisor
 
 #
-# Configuring Apache
-# ------------------
+# Configuring Nginx and PHP
+# -------------------------
 #
-# Putting our site config
+# Config
 # Disabling all sites config
+# Putting our site config
 # Enabling our site config
 # Enabling mods
 #
 
-RUN find /etc/apache2/sites-enabled/ -type l -exec rm -v "{}" \;
-ADD apache-config /etc/apache2/sites-available/sistearth-v4
-# RUN a2ensite sistearth-v4
-RUN ln -s /etc/apache2/sites-available/sistearth-v4 /etc/apache2/sites-enabled/sistearth-v4
-RUN a2enmod rewrite
-RUN service apache2 restart
+RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php5/fpm/php.ini
+RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
+RUN sed -i 's/;date.timezone =/date.timezone = Europe\/Paris/g' /etc/php5/fpm/php.ini
 
-#
-# Configuring PHP
-# ---------------
-# 
-
-RUN sed -i 's/;date.timezone =/date.timezone = Europe\/Paris/g' /etc/php5/cli/php.ini
-RUN sed -i 's/;date.timezone =/date.timezone = Europe\/Paris/g' /etc/php5/apache2/php.ini
+RUN find /etc/nginx/sites-enabled/ -type l -exec rm -v "{}" \;
+ADD nginx-config /etc/nginx/sites-available/sistearth.com
+RUN ln -s /etc/nginx/sites-available/sistearth.com /etc/nginx/sites-enabled/sistearth.com
+RUN service nginx restart
 
 #
 # User
@@ -95,6 +91,7 @@ RUN sed -i 's/;date.timezone =/date.timezone = Europe\/Paris/g' /etc/php5/apache
 
 RUN adduser --gecos "" sistearth
 RUN adduser sistearth sudo
+RUN mkdir -p /var/www
 RUN chown sistearth:sistearth /var/www/
 RUN chmod 4755 /usr/bin/sudo
 

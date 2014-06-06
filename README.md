@@ -15,7 +15,7 @@ Features :
 What you have to do :
 ---------------------
 
-* Replacing ``apache-config`` file by your own config
+* Replacing ``nginx-config`` file by your own config
 * Copy/paste your SSH public key in ``authorized_keys``
 * Generating RSA keys for your container and placing them along to the Dockerfile
 * Editing ``init.sh`` to place your own database initialization queries

@@ -22,8 +22,15 @@ server {
 # --------------------------
 #
 # => all urls with api.sistearth.com/foo
+#    & redirect http to https
 #
 server {
+        listen 80;
+        server_name api.sistearth.com;
+        return 301 https://$server_name$request_uri;
+}
+server {
+        listen 443;
         server_name api.sistearth.com;
         root /var/www/sistearth_v4/web;
 
@@ -42,6 +49,10 @@ server {
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
                 fastcgi_param HTTPS off;
         }
+
+        ssl on;
+        ssl_certificate /home/sistearth/ssl/server.crt;
+        ssl_certificate_key /home/sistearth/ssl/server.key;
 
         error_log /var/log/nginx/sistearth-rest_error.log;
         access_log /var/log/nginx/sistearth-rest_access.log;

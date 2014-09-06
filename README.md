@@ -15,10 +15,30 @@ Features :
 What you have to do :
 ---------------------
 
-* Replacing ``nginx-config`` file by your own config
+## Nginx
+
+* Place your own config in ``nginx-config``
+
+## SSH
+
 * Copy/paste your SSH public key in ``authorized_keys``
-* Generating RSA keys for your container and placing them along to the Dockerfile
-* Editing ``init.sh`` to place your own database initialization queries
+* Generate RSA keys for your container and place them along to the Dockerfile
+
+## SSL
+
+Generate following files and place them along to the Dockerfile : 
+* server.crt  
+* server.csr  
+* server.key
+* public.pem
+* private.pem
+
+## Custom initialization
+
+* Replace ``init.sh`` by your own script
+
+## Let's go !
+
 * Run ``bash docker build .``
 
 Tips :

@@ -113,6 +113,20 @@ ADD id_rsa.pub /home/sistearth/.ssh/id_rsa.pub
 ADD authorized_keys /home/sistearth/.ssh/authorized_keys
 RUN chown sistearth:sistearth /home/sistearth/.ssh -R
 
+# 
+# SSL
+# ---
+#
+# Adding crt, pem, key
+#
+RUN mkdir /home/sistearth/ssl
+ADD private.pem /home/sistearth/ssl/public.pem
+ADD public.pem /home/sistearth/ssl/private.pem
+ADD server.crt /home/sistearth/ssl/server.crt
+ADD server.csr /home/sistearth/ssl/server.csr
+ADD server.key /home/sistearth/ssl/server.key
+
+
 #
 # Other configurations
 # --------------------
